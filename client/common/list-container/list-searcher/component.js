@@ -95,7 +95,7 @@ class Searcher extends Component {
   render() {
     return (
       <div className="list-searcher" ref={ (node) => { this.node = node; } }>
-        <span className="search-container">
+        <div className="search-container">
           <input
             className="search light-border"
             title="Search"
@@ -103,7 +103,7 @@ class Searcher extends Component {
             placeholder={ this.props.config.placeholder }
           />
           <button type="button" className="icon clear-search hidden" onClick={ this.clearSearch } >X</button>
-        </span>
+        </div>
         <button type="button" className="search-button light-border" onClick={ this.handleSearchButtonClick } >
           <img src="images/search.png" alt="Search" />
         </button>

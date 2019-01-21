@@ -64,7 +64,7 @@ const SearchUtils = {
   getFieldsConfig(searchConfig, index) {
     const indexConfig = searchConfig.fieldsConfig[index || DVUtils.EMPTY_STRING] || {};
 
-    if (DVUtils.isUserAdmin(DVUtils.getUser())) {
+    if (DVUtils.isUserAdmin(window.DV.user)) {
       indexConfig.fields = _.union(indexConfig.fields, searchConfig.adminFields);
     }
 

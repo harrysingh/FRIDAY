@@ -3,13 +3,19 @@ import DVUtils from 'shared/utils';
 
 import './style.less';
 
+const getWorkspaces = (workspaces) => {
+  return DVUtils.isUserAdmin(window.DV.user)
+    ? workspaces
+    : workspaces.filter(workspace => !workspace.admin);
+};
+
 const Header = (props) => {
   return (
     <div className="page-header">
       <img className="logo" src="images/dv_logo.png" alt="Da Vinci" />
       <ul className="workspaces">
         {
-          props.workspaces.map((workspace) => {
+          getWorkspaces(props.workspaces).map((workspace) => {
             return (
               <li
                 className="workspace"

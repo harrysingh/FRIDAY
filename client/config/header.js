@@ -7,5 +7,6 @@ module.exports = {
     uid: 2,
     name: 'Scoring',
     href: '/score',
+    admin: true,
   } ],
 };

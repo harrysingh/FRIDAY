@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import DVUtils from 'shared/utils';
 import Header from 'common/header/component';
 import Login from 'app/login/component';
 import Search from 'app/search/component';
@@ -19,7 +20,9 @@ const App = () => {
       <Switch>
         <Route path="/login" component={ Login } />
         <Route path="/search" component={ Search }/>
-        <Route path="/score" component={ Scoring }/>
+        {
+          DVUtils.isUserAdmin(window.DV.user) && <Route path="/score" component={ Scoring }/>
+        }
         <Redirect path="*" to="/search" />
       </Switch>
     </div>
