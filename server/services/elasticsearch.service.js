@@ -24,7 +24,7 @@ const areOptionsValid = (options) => {
     && _.isObject(options.body.query);
 };
 
-const searchWithPagination = async(inputOptions, user) => {
+const searchWithPagination = async(inputOptions) => {
   const indexConfig = IndexManager.getIndexConfig(inputOptions.index);
   if (!_.isObject(indexConfig)) {
     throwError(`Incorrect index value defined in search config ${ JSON.stringify(inputOptions) }`);
@@ -66,16 +66,12 @@ const searchWithPagination = async(inputOptions, user) => {
       const maxScoreParam = esQuery.from ? parseFloat(inputOptions.maxScore || '0') : 0;
       const maxScore = maxScoreParam || (esDocs.hits.total ? esDocs.hits.hits[0]._score : 0);
       esDocs.hits.hits.forEach((entry) => {
-        if (DVUtils.isUserAdmin(user) && !isExactSearch) {
-          results.push(_.extend({
-            score: entry._score,
-            match: (qOptions.offset === 0) && (entry._score === maxScore)
-              ? DVUtils.HYPHEN
-              : (entry._score / maxScore * 100).toFixed(2),
-          }, entry._source));
-        } else {
-          results.push(entry._source);
-        }
+        results.push(_.extend({
+          score: entry._score,
+          match: (qOptions.offset === 0) && (entry._score === maxScore)
+            ? DVUtils.HYPHEN
+            : (entry._score / maxScore * 100).toFixed(2),
+        }, entry._source));
       });
 
       return _.extend({ items: results, maxScore }, resultObject);

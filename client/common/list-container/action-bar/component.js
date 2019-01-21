@@ -31,7 +31,11 @@ class ActionBar extends Component {
                 title={ action.name }
                 onClick={ this.triggerAction.bind(this, action.event) }
               >
-                <img className="icon light-border" src={ action.src } alt={ action.name } />
+                {
+                  !_.isEmpty(action.src)
+                    ? <img className="icon light-border" src={ action.src } alt={ action.name }/>
+                    : <span>{ action.name }</span>
+                }
               </button>
             );
           })

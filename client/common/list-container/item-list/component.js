@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from 'underscore';
 
 import DVUtils from 'shared/utils';
+import Logger from 'lib/logger';
 
 import EmptyItemList from './empty-item-list';
 import NoSearchResults from './no-search-results';
@@ -141,6 +142,8 @@ class ItemList extends Component {
 
   resetList() {
     this.props.list.data.items = [];
+    this.props.list.data.total = 0;
+    Logger.info(`Resetting list ${ JSON.stringify(this.props.list.data) }`);
   }
 
   resetScroll() {

@@ -8,9 +8,7 @@ const { to, reE } = require('../services/util.service');
 
 const download = async(req, res) => {
   const options = req.query || {};
-  const user = {};
-  try { user.role = parseInt(options.role); } catch (err) {}
-  const [ err, queryResult ] = await to(elasticService.searchWithPagination(options, user));
+  const [ err, queryResult ] = await to(elasticService.searchWithPagination(options));
 
   if (err) {
     return reE(res, err);
@@ -19,7 +17,11 @@ const download = async(req, res) => {
   const results = [];
   const indexConfig = searchConfig.fieldsConfig[options.index] || {};
 
-  let fields = indexConfig.fields;
+  const user = {};
+  try { user.role = parseInt(options.role, 10); } catch (err) {
+    // TODO
+  }
+  let { fields } = indexConfig;
   if (DVUtils.isUserAdmin(user)) {
     fields = _.union(fields, searchConfig.adminFields);
   }

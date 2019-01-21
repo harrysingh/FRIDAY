@@ -55,9 +55,8 @@ module.exports = {
   actionBar: {
     config: {
       actions: [ {
-        name: 'Download Results',
+        name: 'Export to CSV',
         event: 'download',
-        src: 'images/download.jpg',
       } ],
     },
   },

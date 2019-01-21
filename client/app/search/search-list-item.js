@@ -8,7 +8,7 @@ import SearchUtils from 'shared/search-utils';
 class SearchListItem extends Component {
   getBucket() {
     const bucket = Math.round(Math.log2((parseFloat(this.props.maxScore) + this.props.min_score) / this.props.score));
-    Logger.info(`Score: ${ this.props.score } Bucket ${ bucket }`);
+    Logger.debug(`Score: ${ this.props.score } Bucket ${ bucket }`);
     return 'bucket_'.concat(bucket);
   }
 
