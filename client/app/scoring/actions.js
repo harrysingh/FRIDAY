@@ -1,6 +1,4 @@
 import _ from 'underscore';
-import cookie from 'cookie';
-import DVUtils from 'shared/utils';
 
 export const CUST_SCORING_REQ = 'Scoring.CUST_SCORING_REQ';
 export const CUST_SCORING_RESULT = 'Scoring.CUST_SCORING_RESULT';
@@ -8,7 +6,6 @@ export const CUST_SCORING_ERR = 'Scoring.CUST_SCORING_ERR';
 
 export const getCustomerScore = (inputOptions) => {
   const customerJson = inputOptions || {};
-  const cookiesMap = cookie.parse(document.cookie);
 
   if (_.isEmpty(customerJson.name)
       || _.isEmpty(customerJson.address)
@@ -22,11 +19,6 @@ export const getCustomerScore = (inputOptions) => {
     method: 'POST',
     type: CUST_SCORING_REQ,
     url: '/v1/scoring/customers',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: cookiesMap[DVUtils.FRIDAY_AUTH_TOKEN_KEY],
-    },
     data: {
       customers: [ {
         kna1_name1: customerJson.name,

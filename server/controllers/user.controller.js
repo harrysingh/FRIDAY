@@ -1,4 +1,5 @@
 const _ = require('underscore');
+const { User } = require('../models/index');
 const authService = require('../services/auth.service');
 const DVUtils = require('../../shared/utils');
 const { to, reE, reS } = require('../services/util.service');
@@ -20,16 +21,37 @@ const create = async(req, res) => {
   return reS(res, { message: 'Successfully created new user.', user: user.toWeb(), token: user.getJWT() }, 201);
 };
 
+const getAll = async(req, res) => {
+  const [ err, users ] = await to(User.find());
+
+  if (err) {
+    return reE(res, 'error occurred trying to list user');
+  }
+
+  return reS(res, {
+    items: users,
+    total: _.size(users),
+  });
+};
+
 const get = async(req, res) => {
   res.setHeader('Content-Type', 'application/json');
   return reS(res, { user: req.user.toWeb() });
 };
 
 const update = async(req, res) => {
-  // eslint-disable-next-line prefer-destructuring
-  let user = req.user;
-  const data = req.body;
-  user.set(data);
+  const currentUser = req.user;
+  if (!DVUtils.isUserAdmin(currentUser)) {
+    return reE(res, 'Only admins can update Users');
+  }
+
+  const [ error, userArray ] = await to(User.find({ _id: req.params.id }));
+  if (error || _.size(userArray) === 0) {
+    return reE(res, 'Invalid User to update');
+  }
+
+  let user = userArray[0];
+  user.set(req.body);
 
   let err;
   [ err, user ] = await to(user.save());
@@ -49,6 +71,7 @@ const update = async(req, res) => {
 
     return reE(res, err);
   }
+
   return reS(res, { message: `Updated User: ${ user.email }` });
 };
 
@@ -67,6 +90,11 @@ const login = async(req, res) => {
     return reE(res, err, 422);
   }
 
+  res.cookie(DVUtils.FRIDAY_USER_PROFILE_KEY, JSON.stringify({
+    name: { first: user.first, last: user.last },
+    email: user.email,
+    role: user.role,
+  }), { expire: 9999 });
   res.cookie(DVUtils.FRIDAY_AUTH_TOKEN_KEY, user.getJWT(), { expire: 9999 });
   return reS(res, { token: user.getJWT(), user: user.toWeb() });
 };
@@ -84,6 +112,7 @@ const logout = (req, res) => {
 module.exports = {
   create,
   get,
+  getAll,
   update,
   remove,
   login,

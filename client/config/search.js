@@ -69,6 +69,10 @@ module.exports = {
       fetchParams: { index: 'material', min_score: 0.5 },
     },
   },
+  adminFields: [
+    'score',
+    'match',
+  ],
   fieldsConfig: {
     material: {
       key: 'mara_matnr',
@@ -77,8 +81,6 @@ module.exports = {
         'mara_mtart',
         'makt_props.makt_maktx',
         'mara_ernam',
-        'score',
-        'match',
       ],
     },
     customer: {
@@ -93,8 +95,6 @@ module.exports = {
         'kna1_stras',
         'knvk_props.knvk_namev',
         'knb1_props.knb1_bukrs',
-        'score',
-        'match',
       ],
     },
   },

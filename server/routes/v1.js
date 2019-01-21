@@ -26,9 +26,12 @@ router.post('/scoring/materials', auth.authenticate('jwt', options), MaterialsCo
 router.post('/scoring/customers', auth.authenticate('jwt', options), CustomersController.score);
 
 router.post('/users', UserController.create);
-router.get('/users', auth.authenticate('jwt', options), UserController.get);
-router.put('/users', auth.authenticate('jwt', options), UserController.update);
-router.delete('/users', auth.authenticate('jwt', options), UserController.remove);
+router.get('/users', auth.authenticate('jwt', options), UserController.getAll);
+
+router.get('/users/:id', auth.authenticate('jwt', options), UserController.get);
+router.put('/users/:id', auth.authenticate('jwt', options), UserController.update);
+router.delete('/users/:id', auth.authenticate('jwt', options), UserController.remove);
+
 router.post('/users/login', UserController.login);
 router.get('/users/logout', UserController.logout);
 
@@ -44,7 +47,7 @@ router.get('/probabilityConfigs', auth.authenticate('jwt', options), Probability
 router.put('/probabilityConfigs', auth.authenticate('jwt', options), ProbabilityConfigController.update);
 router.delete('/probabilityConfigs', auth.authenticate('jwt', options), ProbabilityConfigController.remove);
 
-router.post('/search', SearchController.search);
+router.post('/search', auth.authenticate('jwt', options), SearchController.search);
 router.get('/download', DownloadController.download);
 
 router.get('/dash', auth.authenticate('jwt', options), HomeController.Dashboard);

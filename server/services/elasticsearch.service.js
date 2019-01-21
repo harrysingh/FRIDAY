@@ -1,5 +1,6 @@
 const _ = require('underscore');
 const config = require('../config/config');
+const DVUtils = require('../../shared/utils');
 const IndexManager = require('../elasticsearch/indexmanager');
 const QueryBuilder = require('../elasticsearch/querybuilder');
 const ElasticClient = require('../elasticsearch/queryclient');
@@ -23,17 +24,16 @@ const areOptionsValid = (options) => {
     && _.isObject(options.body.query);
 };
 
-const searchWithPagination = async(inputOptions) => {
+const searchWithPagination = async(inputOptions, user) => {
   const indexConfig = IndexManager.getIndexConfig(inputOptions.index);
   if (!_.isObject(indexConfig)) {
     throwError(`Incorrect index value defined in search config ${ JSON.stringify(inputOptions) }`);
   }
 
-  const options = _.extend({ fields: _.pluck(_.filter(indexConfig.fields, field => field.search), 'name') }, inputOptions);
-  const queryBody = String(options.exact) === 'true'
-      ? QueryBuilder.getExactMatchQuery(options)
-      : QueryBuilder.getSearchQuery(options);
-  const queryOptions = _.extend({
+  const options = _.extend({ fields: _.pluck(_.filter(indexConfig.fields, f => f.search), 'name') }, inputOptions);
+  const isExactSearch = String(options.exact) === 'true';
+  const queryBody = isExactSearch ? QueryBuilder.getExactMatchQuery(options) : QueryBuilder.getSearchQuery(options);
+  const qOptions = _.extend({
     data: true,
     offset: 0,
     limit: 10,
@@ -42,9 +42,9 @@ const searchWithPagination = async(inputOptions) => {
   const esQuery = {
     index: indexConfig.index,
     type: config.search.profileType,
-    from: parseInt(queryOptions.offset, 10),
-    size: parseInt(queryOptions.limit, 10),
-    body: queryOptions.body,
+    from: parseInt(qOptions.offset, 10),
+    size: parseInt(qOptions.limit, 10),
+    body: qOptions.body,
   };
 
   if (!areOptionsValid(esQuery)) {
@@ -58,7 +58,7 @@ const searchWithPagination = async(inputOptions) => {
       }
 
       const resultObject = { total: esDocs.hits.total, time: esDocs.took };
-      if (!queryOptions.data) {
+      if (!qOptions.data) {
         return resultObject;
       }
 
@@ -66,13 +66,19 @@ const searchWithPagination = async(inputOptions) => {
       const maxScoreParam = esQuery.from ? parseFloat(inputOptions.maxScore || '0') : 0;
       const maxScore = maxScoreParam || (esDocs.hits.total ? esDocs.hits.hits[0]._score : 0);
       esDocs.hits.hits.forEach((entry) => {
-        results.push(_.extend({
-          score: entry._score,
-          match: (queryOptions.offset === 0) && (entry._score === maxScore) ? '-' : (entry._score / maxScore * 100).toFixed(2),
-        }, entry._source));
+        if (DVUtils.isUserAdmin(user) && !isExactSearch) {
+          results.push(_.extend({
+            score: entry._score,
+            match: (qOptions.offset === 0) && (entry._score === maxScore)
+              ? DVUtils.HYPHEN
+              : (entry._score / maxScore * 100).toFixed(2),
+          }, entry._source));
+        } else {
+          results.push(entry._source);
+        }
       });
 
-      return _.extend({ items: results, maxScore: maxScore }, resultObject);
+      return _.extend({ items: results, maxScore }, resultObject);
     })
     .catch((error) => {
       throwError(`Error while executing search query: ${ error }`);

@@ -12,6 +12,7 @@ class DownloadResults extends Component {
       count: 20,
       downloadParams: {},
       name: SearchUtils.getFileName(props.index),
+      user: DVUtils.getUser(),
       visible: false,
     }, props);
 
@@ -23,6 +24,7 @@ class DownloadResults extends Component {
     return buildUrl(DVUtils.EMPTY_STRING, {
       path: '/v1/download',
       queryParams: _.extend({}, this.state.downloadParams, {
+        role: this.state.user.role,
         name: this.state.name,
         limit: this.state.count,
       }),

@@ -2,10 +2,9 @@ import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import createHistory from 'history/createBrowserHistory';
+import configureStore from 'lib/configure-store';
 
 import Root from './root';
-
-import configureStore from './lib/configure-store';
 
 const history = createHistory();
 const store = configureStore(history, {});

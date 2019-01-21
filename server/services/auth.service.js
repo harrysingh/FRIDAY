@@ -17,7 +17,6 @@ const getUniqueKeyFromBody = (body) => {
 
   return uniqueKey;
 };
-module.exports.getUniqueKeyFromBody = getUniqueKeyFromBody;
 
 const createUser = async(userInfo) => {
   const authInfo = {};
@@ -55,7 +54,6 @@ const createUser = async(userInfo) => {
   throwError('A valid email or phone number was not entered.');
   return 0;
 };
-module.exports.createUser = createUser;
 
 const authUser = async(userInfo) => {
   const authInfo = {};
@@ -104,4 +102,7 @@ const authUser = async(userInfo) => {
   return user;
 };
 
-module.exports.authUser = authUser;
+module.exports = {
+  createUser,
+  authUser,
+};

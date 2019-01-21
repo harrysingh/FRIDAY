@@ -1,12 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const { Logger, transports } = require('winston');
-const WSEnums = require('./enum');
+const DVEnums = require('./enum');
 
 const logConfig = require('./../config/config').log;
 
 const getLogLevel = () => {
-  return logConfig.logLevel || WSEnums.LOG_LEVEL.INFO;
+  return logConfig.logLevel || DVEnums.LOG_LEVEL.INFO;
 };
 
 const getFileLoggerConfig = () => {

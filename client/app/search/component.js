@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import _ from 'underscore';
 
 import DVUtils from 'shared/utils';
-import searchConfig from 'config/search';
 import ListComponent from 'common/list-container/component';
 import ListEnums from 'common/list-container/enum';
 import Logger from 'lib/logger';
+import searchConfig from 'config/search';
+import SearchUtils from 'shared/search-utils';
 
 import DownloadResults from './download-results';
 import SearchListItem from './search-list-item';
@@ -102,7 +103,7 @@ class SearchContainer extends Component {
     fetchParams.maxScore = this.props.maxScore;
     searchListConfig.list.data.fetchParams = fetchParams;
 
-    const fieldsConfig = searchConfig.fieldsConfig[fetchParams.index];
+    const fieldsConfig = SearchUtils.getFieldsConfig(searchConfig, fetchParams.index);
     searchListConfig.header.config.activeColumns = fieldsConfig.fields;
     searchListConfig.list.config.key = fieldsConfig.key;
 

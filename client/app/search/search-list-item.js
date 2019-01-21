@@ -13,7 +13,7 @@ class SearchListItem extends Component {
   }
 
   render() {
-    const fieldsConfig = searchConfig.fieldsConfig[this.props.index] || {};
+    const fieldsConfig = SearchUtils.getFieldsConfig(searchConfig, this.props.index);
 
     return (
       <div className={ [ 'row fixed list-row', this.getBucket() ].join(DVUtils.SPACE) }>

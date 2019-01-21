@@ -8,7 +8,7 @@ const IndexManager = {
       { name: 'mara_matnr', label: 'Material Number', search: true },
       { name: 'mara_mtart', label: 'Material Type', search: true },
       { name: 'makt_props.makt_maktg', label: 'Material description in upper case for matchcodes' },
-      { name: 'makt_props.makt_maktx', label: 'Material mara_ernam (Short Text)', search: true, },
+      { name: 'makt_props.makt_maktx', label: 'Material mara_ernam (Short Text)', search: true },
       { name: 'mara_matkl', label: 'Material Group' },
       { name: 'mara_bismt', label: 'Old material number' },
       { name: 'mara_vhart', label: 'Packaging Material Type' },

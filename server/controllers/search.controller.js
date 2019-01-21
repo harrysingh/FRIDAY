@@ -5,7 +5,7 @@ const search = async(req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
   const searchOptions = req.body || {};
-  const [ err, queryResult ] = await to(elasticService.searchWithPagination(searchOptions));
+  const [ err, queryResult ] = await to(elasticService.searchWithPagination(searchOptions, req.user));
 
   if (err) {
     return reE(res, err);

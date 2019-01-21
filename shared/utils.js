@@ -1,4 +1,6 @@
 const _ = require('underscore');
+const cookie = require('cookie');
+const DVEnums = require('./enum');
 
 const DVUtils = {
   AMPERSAND: '&',
@@ -6,6 +8,7 @@ const DVUtils = {
   EMAIL_REGEX: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/,
   EMPTY_STRING: '',
   EQUAL_TO: '=',
+  FRIDAY_USER_PROFILE_KEY: 'fridayuserprofile',
   FRIDAY_AUTH_TOKEN_KEY: 'fridayauthtoken',
   HASH: '#',
   HYPHEN: '-',
@@ -115,6 +118,22 @@ const DVUtils = {
     }
 
     return DVUtils.EMPTY_STRING;
+  },
+
+  getUser() {
+    const cookiesMap = cookie.parse(document.cookie);
+
+    try {
+      return JSON.parse(cookiesMap[DVUtils.FRIDAY_USER_PROFILE_KEY]);
+    } catch (error) {
+      // TODO
+    }
+
+    return {};
+  },
+
+  isUserAdmin(user) {
+    return _.isObject(user) && user.role === DVEnums.USER_ROLES.ADMIN;
   },
 };
 
