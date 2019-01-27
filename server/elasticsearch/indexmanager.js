@@ -3,13 +3,13 @@ const _ = require('underscore');
 const IndexManager = {
   INDEXES: [ {
     name: 'material',
-    index: 'makt',
+    index: 'us_hq_makt',
     fields: [
       { name: 'mara_matnr', label: 'Material Number', search: true },
-      { name: 'mara_mtart', label: 'Material Type', search: true },
+      { name: 'mara_mtart', label: 'Material Type' },
       { name: 'makt_props.makt_maktg', label: 'Material description in upper case for matchcodes' },
       { name: 'makt_props.makt_maktx', label: 'Material mara_ernam (Short Text)', search: true },
-      { name: 'mara_matkl', label: 'Material Group' },
+      { name: 'mara_matkl', label: 'Material Group', search: true },
       { name: 'mara_bismt', label: 'Old material number' },
       { name: 'mara_vhart', label: 'Packaging Material Type' },
       { name: 'mara_satnr', label: 'Cross-Plant Configurable Material' },
@@ -18,7 +18,7 @@ const IndexManager = {
       { name: 'mara_mfrnr', label: 'Number of a Manufacturer' },
       { name: 'mara_bmatn', label: 'Number of firm\'s own (internal) inventory-managed material' },
       { name: 'mara_ersda', label: 'Created At' },
-      { name: 'mara_ernam', label: 'Created By', search: true },
+      { name: 'mara_ernam', label: 'Created By' },
       { name: 'mara_laeda', label: 'Modified At' },
       { name: 'mara_aenam', label: 'Modified By' },
       { name: 'mara_vpsta', label: 'Maintenance status of complete material' },
@@ -41,6 +41,7 @@ const IndexManager = {
       { name: 'mara_normt', label: 'Industry Standard Description (such as ANSI or ISO)' },
       { name: 'mara_labor', label: 'Laboratory/design office' },
       { name: 'mara_ekwsl', label: 'Purchasing Value Key' },
+      { name: 'mara_ekgrp', label: 'Purchasing Group' },
       { name: 'mara_brgew', label: 'Gross Weight' },
       { name: 'mara_ntgew', label: 'Net Weight' },
       { name: 'mara_gewei', label: 'Weight Unit' },
@@ -211,10 +212,11 @@ const IndexManager = {
       { name: 'mara.fiber_part5', label: 'Percentage Share of Fiber (Component 5)' },
       { name: 'mara.fashgrd', label: 'Fashion Grade' },
       { name: 'makt.spras', label: 'Language Key' },
+      { name: 'mara_disls', label: 'Lot Size', search: true },
     ],
   }, {
     name: 'customer',
-    index: 'customer',
+    index: 'us_hq_customer',
     fields: [
       { name: 'kna1_kunnr', label: 'Name', search: true },
       { name: 'kna1_land1', label: 'Country key', search: true },

@@ -8,9 +8,9 @@ module.exports = {
       key: 'mara_matnr',
       fields: [
         'mara_matnr',
-        'mara_mtart',
+        'mara_matkl',
         'makt_props.makt_maktx',
-        'mara_ernam',
+        'mara_disls',
       ],
     },
     customer: {

@@ -3,12 +3,13 @@ const DVUtils = require('./../shared/utils');
 
 const SearchUtils = {
   getFieldValueList(itemJson, fieldName) {
-    if (fieldName.indexOf(DVUtils.PERIOD) === -1) {
+    if (Object.prototype.hasOwnProperty.call(itemJson, fieldName)) {
       return [ itemJson[fieldName] ];
     }
 
     const parts = fieldName.split(DVUtils.PERIOD);
     const propsArray = itemJson[parts[0]];
+
     const fieldValues = [];
     _.each(propsArray, (props) => {
       fieldValues.push(props[parts[1]]);
