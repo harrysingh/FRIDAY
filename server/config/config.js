@@ -25,7 +25,7 @@ const config = {
     maxIPSize: 2,
   },
   search: {
-    host: `${ process.env.SEARCH_HOST || 'localhost' }:${ process.env.SEARCH_PORT || '9200' }`,
+    host: `${ process.env.SEARCH_HOST || '35.200.147.172' }:${ process.env.SEARCH_PORT || '9200' }`,
     profileType: 'data',
   },
 };
