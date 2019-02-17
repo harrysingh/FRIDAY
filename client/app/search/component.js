@@ -70,7 +70,7 @@ class SearchContainer extends Component {
       case ListEnums.ACTIONS.DOWNLOAD:
         this.downloadDialog.showDialog(_.extend({
           count: this.props.total || 20,
-        }, this.searchList.getWrappedInstance().getFetchParams()));
+        }, this.searchList.getWrappedInstance().getFetchParams(), { offset: 0 }));
         break;
 
       default:

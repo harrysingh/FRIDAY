@@ -11,6 +11,7 @@ module.exports = {
         'mara_matkl',
         'makt_props.makt_maktx',
         'mara_disls',
+        'closeness',
       ],
     },
     customer: {
@@ -25,6 +26,7 @@ module.exports = {
         'kna1_stras',
         'knvk_props.knvk_namev',
         'knb1_props.knb1_bukrs',
+        'closeness',
       ],
     },
   },

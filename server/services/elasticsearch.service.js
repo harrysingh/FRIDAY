@@ -1,6 +1,7 @@
 const _ = require('underscore');
 const config = require('../config/config');
 const DVUtils = require('../../shared/utils');
+const DVEnums = require('../../shared/enum');
 const IndexManager = require('../elasticsearch/indexmanager');
 const QueryBuilder = require('../elasticsearch/querybuilder');
 const ElasticClient = require('../elasticsearch/queryclient');
@@ -22,6 +23,22 @@ const areOptionsValid = (options) => {
     && !_.isEmpty(options.type)
     && _.isObject(options.body)
     && _.isObject(options.body.query);
+};
+
+const getCloseness = (inputOptions) => {
+  const options = inputOptions || {};
+  const closeness = Math.round(Math.log2((parseFloat(options.maxScore) + options.min_score) / options.score));
+
+  switch (closeness) {
+    case 0:
+      return DVEnums.CLOSENESS.HIGH;
+
+    case 1:
+      return DVEnums.CLOSENESS.MEDIUM;
+
+    default:
+      return DVEnums.CLOSENESS.LOW;
+  }
 };
 
 const searchWithPagination = async(inputOptions) => {
@@ -70,6 +87,11 @@ const searchWithPagination = async(inputOptions) => {
           results.push(entry._source)
         } else {
           results.push(_.extend({
+            closeness: getCloseness({
+              maxScore,
+              score: entry._score,
+              min_score: options.min_score
+            }),
             score: entry._score,
             match: (qOptions.offset === 0) && (entry._score === maxScore)
                 ? DVUtils.HYPHEN

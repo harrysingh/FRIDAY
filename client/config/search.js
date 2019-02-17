@@ -43,6 +43,8 @@ module.exports = {
         mara_matkl: { id: 'mara_matkl', label: 'Material Group', value: 'mara_matkl' },
         mara_disls: { id: 'mara_disls', label: 'Lot size', value: 'mara_disls' },
         mara_ekgrp: { id: 'mara_ekgrp', label: 'Purchasing Group', value: 'mara_ekgrp' },
+
+        closeness: { id: 'closeness', label: 'Closeness', value: 'closeness' },
         score: { id: 'score', label: 'Score', value: 'score' },
         match: { id: 'match', label: 'Relative Score', value: 'match' },
       },
@@ -83,6 +85,7 @@ module.exports = {
         'makt_props.makt_maktx',
         'mara_disls',
         'mara_ekgrp',
+        'closeness',
       ],
     },
     customer: {
@@ -97,6 +100,7 @@ module.exports = {
         'kna1_stras',
         'knvk_props.knvk_namev',
         'knb1_props.knb1_bukrs',
+        'closeness',
       ],
     },
   },
