@@ -41,6 +41,7 @@ module.exports = {
           value: 'knb1_props.knb1_bukrs',
         },
 
+        closeness: { id: 'closeness', label: 'Closeness', value: 'closeness' },
         score: { id: 'score', label: 'Score', value: 'score' },
         match: { id: 'match', label: 'Relative Score', value: 'match' },
       },
@@ -80,6 +81,7 @@ module.exports = {
         'mara_mtart',
         'makt_props.makt_maktx',
         'mara_ernam',
+        'closeness',
       ],
     },
     customer: {
@@ -94,6 +96,7 @@ module.exports = {
         'kna1_stras',
         'knvk_props.knvk_namev',
         'knb1_props.knb1_bukrs',
+        'closeness',
       ],
     },
   },

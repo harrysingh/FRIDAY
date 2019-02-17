@@ -1,6 +1,20 @@
 const _ = require('underscore');
+const DVUtils = require('../../shared/utils');
 const { throwError } = require('../services/util.service');
 const ESEnums = require('./enum');
+
+const getWildCardQuery = (inputOptions) => {
+  const options = inputOptions || { fields: [] };
+
+  return {
+    query: {
+      query_string: {
+        query: options.search,
+        fields: options.fields,
+      }
+    }
+  };
+};
 
 const getMultiMatchQueryJson = (inputOptions) => {
   const options = inputOptions || {};
@@ -43,6 +57,13 @@ const getExactMatchQuery = (inputOptions) => {
 
   if (_.isEmpty(searchOptions.search)) {
     throwError('Invalid search string');
+  }
+
+  if (_.contains(searchOptions.search, DVUtils.ASTERISK) || _.contains(searchOptions.search, DVUtils.QM)) {
+    return getWildCardQuery({
+      search: searchOptions.search,
+      fields: getFieldsToSearch(searchOptions.fields),
+    });
   }
 
   return {

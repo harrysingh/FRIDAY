@@ -8,6 +8,12 @@ const DVEnums = {
     NON_ADMIN: 0,
     ADMIN: 1,
   },
+
+  CLOSENESS: {
+    LOW: 'Low',
+    MEDIUM: 'Medium',
+    HIGH: 'High',
+  },
 };
 
 module.exports = DVEnums;
