@@ -6,12 +6,14 @@ import DVUtils from 'shared/utils';
 import ListComponent from 'common/list-container/component';
 import ListEnums from 'common/list-container/enum';
 import Logger from 'lib/logger';
+import { REQ_RESULT } from 'shared/enum';
 import searchConfig from 'shared/search-config';
 import SearchUtils from 'shared/search-utils';
 
 import DownloadResults from './download-results';
 import SearchListItem from './search-list-item';
-import { searchItems } from './actions';
+import SearchSettings from './search-settings';
+import { getSettings, searchItems } from './actions';
 
 import './style.less';
 
@@ -53,33 +55,57 @@ class SearchContainer extends Component {
     return !_.isEmpty(params.search);
   }
 
-  static getListItemTemplate(itemJson, params) {
-    const itemProps = _.extend({}, itemJson, params);
-    return <SearchListItem { ...itemProps } />;
-  }
-
   constructor(props) {
     super(props);
 
+    this.triggerFetchSettings();
+    this.triggerFetchSettings = this.triggerFetchSettings.bind(this);
     this.onActionClick = this.onActionClick.bind(this);
     this.updateList = this.updateList.bind(this);
+    this.getListItemTemplate = this.getListItemTemplate.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.get_action === REQ_RESULT.SUCCESS) {
+      const fetchParams = SearchContainer.getFetchParamsFromHash();
+      const fieldsConfig = SearchUtils.getFieldsConfig(nextProps.settings, searchConfig, fetchParams.index);
+      this.updateList({ fields: fieldsConfig.search });
+    }
   }
 
   onActionClick(action) {
+    const fetchParams = this.searchList.getWrappedInstance().getFetchParams();
     switch (action) {
       case ListEnums.ACTIONS.DOWNLOAD:
+        const settingsConfig = this.props.settings[fetchParams.index] || {};
         this.downloadDialog.showDialog(_.extend({
           count: this.props.total || 20,
-        }, this.searchList.getWrappedInstance().getFetchParams(), { offset: 0 }));
+          output: settingsConfig.output || [],
+        }, fetchParams, { offset: 0 }));
+        break;
+
+      case ListEnums.ACTIONS.SETTINGS:
+        this.searchSettingsDialog.getWrappedInstance().showDialog({
+          index: fetchParams.index,
+        });
         break;
 
       default:
     }
   }
 
+  getListItemTemplate(itemJson, params) {
+    const fetchParams = SearchContainer.getFetchParamsFromHash();
+    const fieldsConfig = SearchUtils.getFieldsConfig(this.props.settings, searchConfig, fetchParams.index);
+
+    const itemProps = _.extend({ fieldsToRender: fieldsConfig.output }, itemJson, params);
+    return <SearchListItem { ...itemProps } />;
+  }
+
   getListComponentProps() {
     const searchListConfig = DVUtils.deepClone(defaultListConfig);
     const fetchParams = SearchContainer.getFetchParamsFromHash();
+    const fieldsConfig = SearchUtils.getFieldsConfig(this.props.settings, searchConfig, fetchParams.index);
 
     searchListConfig.searcher.data.value = fetchParams.search;
     searchListConfig.searcher.data.exact = fetchParams.exact === 'true';
@@ -90,7 +116,7 @@ class SearchContainer extends Component {
     searchListConfig.masterSelector.data.selected = fetchParams.index;
     searchListConfig.list.config = {
       ...searchListConfig.list.config,
-      getListItemTemplate: SearchContainer.getListItemTemplate,
+      getListItemTemplate: this.getListItemTemplate,
       fetchItems: searchItems,
       getHashString: SearchContainer.getHashString,
       hasFilters: SearchContainer.hasFilters,
@@ -101,29 +127,36 @@ class SearchContainer extends Component {
 
     Logger.info(`Setting max score to ${ this.props.maxScore }`);
     fetchParams.maxScore = this.props.maxScore;
+    fetchParams.fields = fieldsConfig.search;
     searchListConfig.list.data.fetchParams = fetchParams;
 
-    const fieldsConfig = SearchUtils.getFieldsConfig(searchConfig, fetchParams.index);
-    searchListConfig.header.config.activeColumns = fieldsConfig.fields;
+    searchListConfig.header.config.activeColumns = fieldsConfig.output;
     searchListConfig.list.config.key = fieldsConfig.key;
 
     return searchListConfig;
   }
 
-  updateList() {
-    this.searchList.getWrappedInstance().updateList();
+  triggerFetchSettings() {
+    this.props.dispatch(getSettings());
+  }
+
+  updateList(options) {
+    this.searchList.getWrappedInstance().updateList(options);
   }
 
   render() {
     const listComponentProps = this.getListComponentProps();
     const downloadResultProps = { visible: false, count: _.size(listComponentProps.list.data.items) };
+    const searchSettings = {
+      settings: this.props.settings[listComponentProps.list.data.fetchParams.index],
+      onChange: this.triggerFetchSettings,
+      visible: false,
+    };
 
     return (
       <div className="search-list-container">
-        <DownloadResults
-          ref={ (node) => { this.downloadDialog = node; } }
-          { ...downloadResultProps }
-        />
+        <DownloadResults ref={ (node) => { this.downloadDialog = node; } } { ...downloadResultProps } />
+        <SearchSettings ref={ (node) => { this.searchSettingsDialog = node; } } { ...searchSettings } />
         <ListComponent ref={ (node) => { this.searchList = node; } } { ...listComponentProps } />
       </div>
     );
@@ -135,6 +168,8 @@ const mapStateToProps = state => ({
   total: state.searchReducer.total,
   fetching: state.searchReducer.fetching,
   items: state.searchReducer.items,
+  settings: state.searchReducer.settings,
+  get_action: state.searchReducer.get_action,
   errorMessage: state.searchReducer.errorMessage,
 });
 

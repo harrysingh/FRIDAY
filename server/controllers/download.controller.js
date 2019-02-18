@@ -8,6 +8,12 @@ const { to, reE } = require('../services/util.service');
 
 const download = async(req, res) => {
   const options = req.query || {};
+  if (_.isString(options.fields) && !_.isEmpty(options.fields)) {
+    options.fields = options.fields.split(DVUtils.COMMA);
+  }
+  if (_.isString(options.output) && !_.isEmpty(options.output)) {
+    options.output = options.output.split(DVUtils.COMMA);
+  }
   const [ err, queryResult ] = await to(elasticService.searchWithPagination(_.extend(options, { maxScore: 0 })));
 
   if (err) {
@@ -22,7 +28,7 @@ const download = async(req, res) => {
   try { user.role = parseInt(options.role, 10); } catch (err) {
     // TODO
   }
-  let { fields } = indexConfig;
+  let fields = _.union(_.isEmpty(options.output) ? indexConfig.output : options.output, searchConfig.extraFields);
   if (DVUtils.isUserAdmin(user)) {
     fields = _.union(fields, searchConfig.adminFields);
   }

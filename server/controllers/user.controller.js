@@ -105,8 +105,8 @@ const updateSettings = async(req, res) => {
   }
 
   const user = userArray[0];
-  user.set({ settings: req.body.settings });
-
+  const settings = _.extend(user.settings, req.body.settings);
+  user.set({ settings });
 
   const [ err, updatedUser ] = await to(user.save());
   if (err) {
@@ -115,7 +115,7 @@ const updateSettings = async(req, res) => {
     return reE(res, err);
   }
 
-  return reS(res, { message: `Updated User settings: ${ updatedUser.email }` });
+  return reS(res, { message: `Updated User settings: ${ updatedUser.email }`, settings: updatedUser.settings });
 };
 
 const remove = async(req, res) => {

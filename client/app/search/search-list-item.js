@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import DVUtils from 'shared/utils';
 import Logger from 'lib/logger';
-import searchConfig from 'shared/search-config';
 import SearchUtils from 'shared/search-utils';
 
 class SearchListItem extends Component {
@@ -13,12 +12,10 @@ class SearchListItem extends Component {
   }
 
   render() {
-    const fieldsConfig = SearchUtils.getFieldsConfig(searchConfig, this.props.index);
-
     return (
       <div className={ [ 'row fixed list-row', this.getBucket() ].join(DVUtils.SPACE) }>
         {
-          fieldsConfig.fields.map((field) => {
+          this.props.fieldsToRender.map((field) => {
             return (
               <div className={ [ 'cell middle', field.replace(DVUtils.PERIOD, DVUtils.HYPHEN) ].join(DVUtils.SPACE) }>
                 {
