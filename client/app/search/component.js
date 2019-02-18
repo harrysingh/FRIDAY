@@ -6,7 +6,7 @@ import DVUtils from 'shared/utils';
 import ListComponent from 'common/list-container/component';
 import ListEnums from 'common/list-container/enum';
 import Logger from 'lib/logger';
-import searchConfig from 'config/search';
+import searchConfig from 'shared/search-config';
 import SearchUtils from 'shared/search-utils';
 
 import DownloadResults from './download-results';

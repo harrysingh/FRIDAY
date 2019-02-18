@@ -2,19 +2,20 @@ const _ = require('underscore');
 const Json2csvParser = require('json2csv').Parser;
 const DVUtils = require('../../shared/utils');
 const elasticService = require('../services/elasticsearch.service');
-const searchConfig = require('../elasticsearch/config');
+const searchConfig = require('../../shared/search-config');
 const SearchUtils = require('../../shared/search-utils');
 const { to, reE } = require('../services/util.service');
 
 const download = async(req, res) => {
   const options = req.query || {};
-  const [ err, queryResult ] = await to(elasticService.searchWithPagination(options));
+  const [ err, queryResult ] = await to(elasticService.searchWithPagination(_.extend(options, { maxScore: 0 })));
 
   if (err) {
     return reE(res, err);
   }
 
   const results = [];
+  const fieldLabelConfig = searchConfig.header.config.columns;
   const indexConfig = searchConfig.fieldsConfig[options.index] || {};
 
   const user = {};
@@ -29,7 +30,7 @@ const download = async(req, res) => {
   _.each(queryResult.items, (item) => {
     const resultJson = {};
     _.each(fields, (field) => {
-      resultJson[field] = SearchUtils.getFieldValues(item, field).join('\\n');
+      resultJson[fieldLabelConfig[field].label] = SearchUtils.getFieldValues(item, field).join('\\n');
     });
     results.push(resultJson);
   });

@@ -32,6 +32,9 @@ router.get('/users/:id', auth.authenticate('jwt', options), UserController.get);
 router.put('/users/:id', auth.authenticate('jwt', options), UserController.update);
 router.delete('/users/:id', auth.authenticate('jwt', options), UserController.remove);
 
+router.get('/settings', auth.authenticate('jwt', options), UserController.getSettings);
+router.put('/settings', auth.authenticate('jwt', options), UserController.updateSettings);
+
 router.post('/users/login', UserController.login);
 router.get('/users/logout', UserController.logout);
 
