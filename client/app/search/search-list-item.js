@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import DVUtils from 'shared/utils';
 import Logger from 'lib/logger';
-import searchConfig from 'config/search';
+import searchConfig from 'shared/search-config';
 import SearchUtils from 'shared/search-utils';
 
 class SearchListItem extends Component {

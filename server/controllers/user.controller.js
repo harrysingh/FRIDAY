@@ -35,8 +35,18 @@ const getAll = async(req, res) => {
 };
 
 const get = async(req, res) => {
+  const currentUser = req.user;
+  if (!DVUtils.isUserAdmin(currentUser) || currentUser.id !== req.params.id) {
+    return reE(res, `User ${ currentUser.id } does not has access to query user ${ req.params.id }`);
+  }
+
+  const [ error, userArray ] = await to(User.find({ _id: req.params.id }));
+  if (error || _.size(userArray) === 0) {
+    return reE(res, 'Invalid User to query');
+  }
+
   res.setHeader('Content-Type', 'application/json');
-  return reS(res, { user: req.user.toWeb() });
+  return reS(res, { user: userArray[0].toWeb() });
 };
 
 const update = async(req, res) => {
@@ -75,6 +85,39 @@ const update = async(req, res) => {
   return reS(res, { message: `Updated User: ${ user.email }` });
 };
 
+const getSettings = async(req, res) => {
+  const currentUser = req.user;
+
+  const [ error, userArray ] = await to(User.find({ _id: currentUser.id }));
+  if (error || _.size(userArray) === 0) {
+    return reE(res, 'Invalid User to get settings');
+  }
+
+  return reS(res, { settings: userArray[0].settings });
+};
+
+const updateSettings = async(req, res) => {
+  const currentUser = req.user;
+
+  const [ error, userArray ] = await to(User.find({ _id: currentUser.id }));
+  if (error || _.size(userArray) === 0) {
+    return reE(res, 'Invalid User to update settings');
+  }
+
+  let user = userArray[0];
+  user.set({ settings: req.body.settings });
+
+  let err;
+  [ err, user ] = await to(user.save());
+  if (err) {
+    // eslint-disable-next-line no-console
+    console.log(err, user);
+    return reE(res, err);
+  }
+
+  return reS(res, { message: `Updated User settings: ${ user.email }` });
+};
+
 const remove = async(req, res) => {
   const [ err ] = await to(req.user.destroy());
   if (err) {
@@ -91,6 +134,7 @@ const login = async(req, res) => {
   }
 
   res.cookie(DVUtils.FRIDAY_USER_PROFILE_KEY, JSON.stringify({
+    id: user.id,
     name: { first: user.first, last: user.last },
     email: user.email,
     role: user.role,
@@ -104,6 +148,7 @@ const logout = (req, res) => {
     return reE(res, 'User no logged in', 422);
   }
 
+  res.cookie(DVUtils.FRIDAY_USER_PROFILE_KEY, DVUtils.EMPTY_STRING, { maxAge: 9999 });
   res.cookie(DVUtils.FRIDAY_AUTH_TOKEN_KEY, DVUtils.EMPTY_STRING, { maxAge: 9999 });
   res.redirect(DVUtils.LOGIN_PATH);
   return 0;
@@ -113,7 +158,9 @@ module.exports = {
   create,
   get,
   getAll,
+  getSettings,
   update,
+  updateSettings,
   remove,
   login,
   logout,

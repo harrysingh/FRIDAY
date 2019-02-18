@@ -27,9 +27,9 @@ const areOptionsValid = (options) => {
 
 const getCloseness = (inputOptions) => {
   const options = inputOptions || {};
-  const closeness = Math.round(Math.log2((parseFloat(options.maxScore) + options.min_score) / options.score));
+  const value = Math.round(Math.log2((parseFloat(options.maxScore) + parseFloat(options.min_score)) / options.score));
 
-  switch (closeness) {
+  switch (value) {
     case 0:
       return DVEnums.CLOSENESS.HIGH;
 
