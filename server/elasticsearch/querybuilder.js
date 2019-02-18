@@ -11,8 +11,8 @@ const getWildCardQuery = (inputOptions) => {
       query_string: {
         query: options.search,
         fields: options.fields,
-      }
-    }
+      },
+    },
   };
 };
 
