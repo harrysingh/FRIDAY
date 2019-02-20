@@ -16,8 +16,6 @@ module.exports = {
     config: {
       listName: 'items',
       columns: {
-        name: { id: 'name', label: 'Topic Name', value: 'name' },
-        modifiedDate: { id: 'modifiedDate', label: 'Modified', value: 'modifiedDate' },
         mara_matnr: { id: 'mara_matnr', label: 'Material Number', value: 'mara_matnr' },
         mara_mtart: { id: 'mara_mtart', label: 'Material Type', value: 'mara_mtart' },
         'makt_props.makt_maktx': { id: 'makt_props.makt_maktx', label: 'Description', value: 'makt_props.makt_maktx' },
@@ -61,6 +59,9 @@ module.exports = {
       actions: [ {
         name: 'Export to CSV',
         event: 'download',
+      }, {
+        name: 'Settings',
+        event: 'settings',
       } ],
     },
   },
@@ -76,21 +77,40 @@ module.exports = {
     'score',
     'match',
   ],
+  extraFields: [
+    'closeness',
+  ],
   fieldsConfig: {
     material: {
+      index: 'material',
       key: 'mara_matnr',
-      fields: [
+      search: [
+        'mara_matnr',
+        'mara_matkl',
+        'makt_props.makt_maktx',
+        'mara_disls',
+      ],
+      output: [
         'mara_matnr',
         'mara_matkl',
         'makt_props.makt_maktx',
         'mara_disls',
         'mara_ekgrp',
-        'closeness',
       ],
     },
     customer: {
+      index: 'customer',
       key: 'customer_id',
-      fields: [
+      search: [
+        'kna1_kunnr',
+        'kna1_land1',
+        'kna1_name1',
+        'kna1_name2',
+        'kna1_ort01',
+        'knvk_props.knvk_namev',
+        'knb1_props.knb1_bukrs',
+      ],
+      output: [
         'kna1_kunnr',
         'kna1_land1',
         'kna1_name1',
@@ -100,7 +120,6 @@ module.exports = {
         'kna1_stras',
         'knvk_props.knvk_namev',
         'knb1_props.knb1_bukrs',
-        'closeness',
       ],
     },
   },

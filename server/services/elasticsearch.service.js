@@ -84,18 +84,14 @@ const searchWithPagination = async(inputOptions) => {
       const maxScore = maxScoreParam || (esDocs.hits.total ? esDocs.hits.hits[0]._score : 0);
       esDocs.hits.hits.forEach((entry) => {
         if (isExactSearch) {
-          results.push(entry._source)
+          results.push(entry._source);
         } else {
           results.push(_.extend({
-            closeness: getCloseness({
-              maxScore,
-              score: entry._score,
-              min_score: options.min_score
-            }),
+            closeness: getCloseness({ maxScore, score: entry._score, min_score: options.min_score }),
             score: entry._score,
             match: (qOptions.offset === 0) && (entry._score === maxScore)
-                ? DVUtils.HYPHEN
-                : (entry._score / maxScore * 100).toFixed(2),
+              ? DVUtils.HYPHEN
+              : (entry._score / maxScore * 100).toFixed(2),
           }, entry._source));
         }
       });

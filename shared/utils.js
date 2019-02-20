@@ -5,6 +5,7 @@ const DVEnums = require('./enum');
 const DVUtils = {
   AMPERSAND: '&',
   ASTERISK: '*',
+  COMMA: ',',
   DOUBLE_QUOTES: '"',
   EMAIL_REGEX: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/,
   EMPTY_STRING: '',

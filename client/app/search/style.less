@@ -1,7 +1,6 @@
 .search-list-container {
-  .download-container {
-    display: none;
-
+  .download-container,
+  .user-settings-container {
     .overlay {
       position: fixed;
       background: #000;
@@ -21,24 +20,6 @@
       background: #e3e4e3;
       padding: 1rem;
       z-index: 100;
-
-      .row .label {
-        width: 6rem;
-        display: inline-block;
-      }
-
-      .count,
-      .filename {
-        padding: 0.5rem;
-      }
-
-      .filename {
-        width: 15rem;
-      }
-
-      .count {
-        margin-top: 1rem;
-      }
 
       .action-buttons {
         padding: 2rem;
@@ -63,6 +44,56 @@
 
     &.visible {
       display: block;
+    }
+  }
+
+  .download-container {
+    .content {
+      .row .label {
+        width: 6rem;
+        display: inline-block;
+      }
+
+      .count,
+      .filename {
+        padding: 0.5rem;
+      }
+
+      .filename {
+        width: 15rem;
+      }
+
+      .count {
+        margin-top: 1rem;
+      }
+    }
+  }
+
+  .user-settings-container {
+    .content {
+      height: 26rem;
+
+      .fields-container {
+        height: 18rem;
+        overflow: scroll;
+
+        .search-fields,
+        .output-fields {
+          vertical-align: top;
+          width: 45%;
+          padding: 0.5rem;
+          display: inline-block;
+
+          h4 {
+            margin-top: 0;
+          }
+
+          label {
+            display: block;
+            padding: 0.5rem 0;
+          }
+        }
+      }
     }
   }
 
@@ -91,7 +122,8 @@
   }
 
   .action-bar {
-    .download {
+    .download,
+    .settings {
       border: none;
       background: transparent;
       font-size: 0.9rem;

@@ -37,7 +37,10 @@ const UserSchema = mongoose.Schema({
       message: 'Not a valid email.',
     }) ],
   },
-  settings: { type: Object },
+  settings: {
+    material: { type: Object },
+    customer: { type: Object },
+  },
   password: { type: String },
   status: { type: Boolean, default: false },
   role: { type: Number, default: 0 }, // 0: user,1:admin

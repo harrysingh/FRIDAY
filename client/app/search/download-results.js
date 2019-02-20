@@ -50,10 +50,12 @@ class DownloadResults extends Component {
   }
 
   render() {
-    const classesToAdd = 'download-container'.concat(this.state.visible ? ' visible' : DVUtils.EMPTY_STRING);
+    if (!this.state.visible) {
+      return <span/>;
+    }
 
     return (
-      <div className={ classesToAdd }>
+      <div className="download-container">
         <div className="overlay" />
         <div className="content light-border">
           <h2>Export Results to CSV</h2>

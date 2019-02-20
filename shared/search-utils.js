@@ -62,14 +62,20 @@ const SearchUtils = {
       .concat('csv');
   },
 
-  getFieldsConfig(searchConfig, index) {
-    const indexConfig = searchConfig.fieldsConfig[index || DVUtils.EMPTY_STRING] || {};
+  getFieldsConfig(searchSettings, searchConfig, index) {
+    const settings = searchSettings[index || DVUtils.EMPTY_STRING] || {};
+    const config = searchConfig.fieldsConfig[index || DVUtils.EMPTY_STRING] || {};
 
+    let outputFields = _.union(_.isEmpty(settings.output) ? config.output : settings.output, searchConfig.extraFields);
     if (DVUtils.isUserAdmin(window.DV.user)) {
-      indexConfig.fields = _.union(indexConfig.fields, searchConfig.adminFields);
+      outputFields = _.union(outputFields, searchConfig.adminFields);
     }
 
-    return indexConfig;
+    return {
+      key: config.key,
+      output: outputFields,
+      search: _.isEmpty(settings.search) ? config.search : settings.search,
+    };
   },
 };
 
