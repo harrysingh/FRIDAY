@@ -22,6 +22,8 @@ class SearchSettings extends Component {
     this.state = SearchSettings.getDefaultState();
     this.closeDialog = this.closeDialog.bind(this);
     this.saveSettings = this.saveSettings.bind(this);
+    this.selectAll = this.selectAll.bind(this);
+    this.deselectAll = this.deselectAll.bind(this);
     this.handleOutputInputChange = this.handleOutputInputChange.bind(this);
     this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
   }
@@ -31,6 +33,25 @@ class SearchSettings extends Component {
       this.props.onChange();
       this.closeDialog();
     }
+  }
+
+  getSelectionDOM(name) {
+    const isEmpty = _.isEmpty(this.state[name]);
+    const fieldsSettings = searchConfig.fieldsConfig[this.state.index];
+
+    return (
+      <label>
+        <input
+          type="checkbox"
+          checked={ false }
+          onChange={ isEmpty
+            ? this.selectAll.bind(this, name, _.clone(fieldsSettings[name]))
+            : this.deselectAll.bind(this, name)
+          }
+        />
+        { isEmpty ? 'Select All' : 'Deselect All' }
+      </label>
+    );
   }
 
   saveSettings() {
@@ -71,6 +92,18 @@ class SearchSettings extends Component {
     });
   }
 
+  selectAll(name, fields) {
+    const stateToUpdate = {};
+    stateToUpdate[name] = fields;
+    this.setState(stateToUpdate);
+  }
+
+  deselectAll(name) {
+    const stateToUpdate = {};
+    stateToUpdate[name] = [];
+    this.setState(stateToUpdate);
+  }
+
   render() {
     if (!this.state.visible) {
       return <span/>;
@@ -86,6 +119,7 @@ class SearchSettings extends Component {
           <div className="fields-container">
             <div className="search-fields">
               <h4>Search Fields</h4>
+              { this.getSelectionDOM('search') }
               {
                 fieldsSettings.search.map((field) => {
                   return (
@@ -104,6 +138,7 @@ class SearchSettings extends Component {
             </div>
             <div className="output-fields">
               <h4>Output Fields</h4>
+              { this.getSelectionDOM('output') }
               {
                 fieldsSettings.output.map((field) => {
                   return (
@@ -123,7 +158,14 @@ class SearchSettings extends Component {
           </div>
           <div className="action-buttons">
             <button type="button" className="cancel light-border" onClick={ this.closeDialog } >Cancel</button>
-            <button type="button" className="save light-border primary" onClick={ this.saveSettings }>Save</button>
+            <button
+              type="button"
+              disabled={ _.isEmpty(this.state.output) || _.isEmpty(this.state.search) }
+              className="save light-border primary"
+              onClick={ this.saveSettings }
+            >
+              Save
+            </button>
           </div>
         </div>
       </div>
