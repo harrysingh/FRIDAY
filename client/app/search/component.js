@@ -13,7 +13,7 @@ import SearchUtils from 'shared/search-utils';
 import DownloadResults from './download-results';
 import FileUpload from './upload-data';
 import SearchListItem from './search-list-item';
-import SearchSettings from './search-settings';
+import SearchViews from './search-views';
 import { getSettings, searchItems } from './actions';
 
 import './style.less';
@@ -86,7 +86,11 @@ class SearchContainer extends Component {
         break;
 
       case ListEnums.ACTIONS.SETTINGS:
+        const defaultSettings = { views: [ SearchViews.getDefaultView(fetchParams.index) ] };
+        const settings = this.props.settings[fetchParams.index] || {};
         this.searchSettingsDialog.getWrappedInstance().showDialog({
+          selectedView: parseInt(settings.selected, 10) || 0,
+          views: _.isEmpty(settings.views) ? defaultSettings.views : settings.views,
           index: fetchParams.index,
         });
         break;
@@ -155,7 +159,7 @@ class SearchContainer extends Component {
     const listComponentProps = this.getListComponentProps();
     const downloadResultProps = { visible: false, count: _.size(listComponentProps.list.data.items) };
     const searchSettings = {
-      settings: this.props.settings[listComponentProps.list.data.fetchParams.index],
+      settings: this.props.settings[listComponentProps.list.data.fetchParams.index] || {},
       onChange: this.triggerFetchSettings,
       visible: false,
     };
@@ -163,7 +167,7 @@ class SearchContainer extends Component {
     return (
       <div className="search-list-container">
         <DownloadResults ref={ (node) => { this.downloadDialog = node; } } { ...downloadResultProps } />
-        <SearchSettings ref={ (node) => { this.searchSettingsDialog = node; } } { ...searchSettings } />
+        <SearchViews ref={ (node) => { this.searchSettingsDialog = node; } } { ...searchSettings } />
         <FileUpload ref={ (node) => { this.fileUploadDialog = node; } } />
         <ListComponent ref={ (node) => { this.searchList = node; } } { ...listComponentProps } />
       </div>

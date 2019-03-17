@@ -62,7 +62,10 @@ const SearchUtils = {
   },
 
   getFieldsConfig(searchSettings, searchConfig, index) {
-    const settings = searchSettings[index || DVUtils.EMPTY_STRING] || {};
+    const settingsForIndex = searchSettings[index || DVUtils.EMPTY_STRING] || { views: [], selected: 0 };
+    const settings = _.isEmpty(settingsForIndex.views)
+      ? {}
+      : settingsForIndex.views[settingsForIndex.selected || 0] || {};
     const config = searchConfig.fieldsConfig[index || DVUtils.EMPTY_STRING] || {};
 
     let outputFields = _.union(_.isEmpty(settings.output) ? config.output : settings.output, searchConfig.extraFields);

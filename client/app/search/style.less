@@ -78,29 +78,65 @@
     }
   }
 
-  .user-settings-container {
-    .content {
-      height: 26rem;
+  .user-settings-container .content {
+    height: 30rem;
 
-      .fields-container {
-        height: 18rem;
-        overflow: scroll;
+    .add-view {
+      float: right;
+      padding: .5rem;
+      margin-left: .5rem;
+      font-size: .8rem;
+      cursor: pointer;
+      vertical-align: top;
+      border-radius: .25rem;
+      border: 1px solid #e1e1e1;
+    }
 
-        .search-fields,
-        .output-fields {
-          vertical-align: top;
-          width: 45%;
-          padding: 0.5rem;
-          display: inline-block;
+    .name-container,
+    .view-dropdown {
+      padding-bottom: 0.5rem;
 
-          h4 {
-            margin-top: 0;
-          }
+      .name-label {
+        display: inline-block;
+        width: 5rem;
+        padding-left: 0.5rem;
+      }
 
-          label {
-            display: block;
-            padding: 0.5rem 0;
-          }
+      .view-name {
+        height: 2rem;
+        width: 15rem;
+        padding-left: 0.5rem;
+      }
+
+      .view-selector {
+        width: 10rem;
+        height: 1.5rem;
+        font-size: .8rem;
+      }
+    }
+
+    .settings-container .update-setting-label {
+      padding: 0.5rem;
+    }
+
+    .fields-container {
+      height: 18rem;
+      overflow: scroll;
+
+      .search-fields,
+      .output-fields {
+        vertical-align: top;
+        width: 45%;
+        padding: 0.5rem;
+        display: inline-block;
+
+        h4 {
+          margin-top: 0;
+        }
+
+        label {
+          display: block;
+          padding: 0.5rem 0;
         }
       }
     }

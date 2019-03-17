@@ -1,43 +1,30 @@
 import React, { Component } from 'react';
 import _ from 'underscore';
 
-import { connect } from 'react-redux';
 import searchConfig from 'shared/search-config';
-import { REQ_RESULT } from 'shared/enum';
-import { updateSettings } from 'app/search/actions';
 
 class SearchSettings extends Component {
-  static getDefaultState(index) {
-    if (_.isEmpty(index)) {
-      return { index, search: [], output: [] };
-    }
-
-    const defaultFields = searchConfig.fieldsConfig[index];
-    return { index, search: defaultFields.search, output: defaultFields.output };
-  }
-
   constructor(props) {
     super(props);
 
-    this.state = SearchSettings.getDefaultState();
+    this.state = _.extend({}, _.pick(props, [ 'search', 'output', 'name' ]));
+
     this.closeDialog = this.closeDialog.bind(this);
     this.saveSettings = this.saveSettings.bind(this);
     this.selectAll = this.selectAll.bind(this);
     this.deselectAll = this.deselectAll.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
     this.handleOutputInputChange = this.handleOutputInputChange.bind(this);
     this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.save_action === REQ_RESULT.SUCCESS) {
-      this.props.onChange();
-      this.closeDialog();
-    }
+    this.setState(_.extend({}, _.pick(nextProps, [ 'search', 'output', 'name' ])));
   }
 
   getSelectionDOM(name) {
     const isEmpty = _.isEmpty(this.state[name]);
-    const fieldsSettings = searchConfig.fieldsConfig[this.state.index];
+    const fieldsSettings = searchConfig.fieldsConfig[this.props.index];
 
     return (
       <label>
@@ -54,24 +41,12 @@ class SearchSettings extends Component {
     );
   }
 
-  saveSettings() {
-    const settingsToSave = {};
-    settingsToSave[this.state.index] = _.pick(this.state, [ 'search', 'output' ]);
-    this.props.dispatch(updateSettings({ settings: settingsToSave }));
-  }
-
-  showDialog(inputOptions) {
-    const options = inputOptions || {};
-    if (_.isEmpty(options.index)) {
-      return;
-    }
-
-    const searchSetting = _.extend(SearchSettings.getDefaultState(options.index), this.props.settings);
-    this.setState(_.extend({ ...searchSetting, visible: true }, options));
-  }
-
   closeDialog() {
-    this.setState({ visible: false });
+    this.props.closeDialog();
+  }
+
+  saveSettings() {
+    this.props.saveSettings(_.pick(this.state, [ 'search', 'output', 'name' ]));
   }
 
   handleSearchInputChange(event) {
@@ -104,79 +79,80 @@ class SearchSettings extends Component {
     this.setState(stateToUpdate);
   }
 
-  render() {
-    if (!this.state.visible) {
-      return <span/>;
-    }
+  handleNameChange(event) {
+    this.setState({ name: event.currentTarget.value });
+  }
 
-    const fieldsSettings = searchConfig.fieldsConfig[this.state.index];
+  render() {
+    const fieldsSettings = searchConfig.fieldsConfig[this.props.index];
     const fieldLabelConfig = searchConfig.header.config.columns;
     return (
-      <div className="user-settings-container">
-        <div className="overlay" />
-        <div className="content light-border">
-          <h2>Update Search settings</h2>
-          <div className="fields-container">
-            <div className="search-fields">
-              <h4>Search Fields</h4>
-              { this.getSelectionDOM('search') }
-              {
-                fieldsSettings.search.map((field) => {
-                  return (
-                    <label>
-                      <input
-                        name={ field }
-                        type="checkbox"
-                        checked={ _.contains(this.state.search, field) }
-                        onChange={ this.handleSearchInputChange }
-                      />
-                      { fieldLabelConfig[field].label }
-                    </label>
-                  );
-                })
-              }
-            </div>
-            <div className="output-fields">
-              <h4>Output Fields</h4>
-              { this.getSelectionDOM('output') }
-              {
-                fieldsSettings.output.map((field) => {
-                  return (
-                    <label>
-                      <input
-                        name={ field }
-                        type="checkbox"
-                        checked={ _.contains(this.state.output, field) }
-                        onChange={ this.handleOutputInputChange }
-                      />
-                      { fieldLabelConfig[field].label }
-                    </label>
-                  );
-                })
-              }
-            </div>
+      <div className="settings-container">
+        <div className="update-setting-label">Update Search settings</div>
+        <div className="name-container">
+          <div className="name-label">Name</div>
+          <input
+            className="view-name light-border"
+            title="Name"
+            value={ this.state.name }
+            onChange={ this.handleNameChange }
+            placeholder="Enter Name"
+          />
+        </div>
+        <div className="fields-container">
+          <div className="search-fields">
+            <h4>Search Fields</h4>
+            { this.getSelectionDOM('search') }
+            {
+              fieldsSettings.search.map((field) => {
+                return (
+                  <label>
+                    <input
+                      name={ field }
+                      type="checkbox"
+                      checked={ _.contains(this.state.search, field) }
+                      onChange={ this.handleSearchInputChange }
+                    />
+                    { fieldLabelConfig[field].label }
+                  </label>
+                );
+              })
+            }
           </div>
-          <div className="action-buttons">
-            <button type="button" className="cancel light-border" onClick={ this.closeDialog } >Cancel</button>
-            <button
-              type="button"
-              disabled={ _.isEmpty(this.state.output) || _.isEmpty(this.state.search) }
-              className="save light-border primary"
-              onClick={ this.saveSettings }
-            >
-              Save
-            </button>
+          <div className="output-fields">
+            <h4>Output Fields</h4>
+            { this.getSelectionDOM('output') }
+            {
+              fieldsSettings.output.map((field) => {
+                return (
+                  <label>
+                    <input
+                      name={ field }
+                      type="checkbox"
+                      checked={ _.contains(this.state.output, field) }
+                      onChange={ this.handleOutputInputChange }
+                    />
+                    { fieldLabelConfig[field].label }
+                  </label>
+                );
+              })
+            }
           </div>
+        </div>
+        <div className="action-buttons">
+          <button type="button" className="cancel light-border" onClick={ this.closeDialog } >Cancel</button>
+          <button
+            type="button"
+            disabled={ _.isEmpty(this.state.output) || _.isEmpty(this.state.search) }
+            className="save light-border primary"
+            onClick={ this.saveSettings }
+          >
+            Save
+          </button>
         </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  fetching: state.searchReducer.fetching,
-  save_action: state.searchReducer.save_action,
-  errorMessage: state.searchReducer.errorMessage,
-});
-
-export default connect(mapStateToProps, null, null, { withRef: true })(SearchSettings);
+export default SearchSettings;
