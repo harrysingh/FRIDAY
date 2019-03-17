@@ -1,4 +1,5 @@
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
@@ -11,9 +12,17 @@ const v1 = require('./routes/v1');
 const routes = require('./routes/routes');
 const DVUtils = require('../shared/utils');
 const config = require('./config/config');
+const UploadController = require('./controllers/upload.controller');
 
 const app = express();
 app.use(cookieParser());
+
+app.use(fileUpload({
+  limits: { fileSize: 50 * 1024 * 1024 },
+}));
+app.post('/upload', (req, res) => {
+  UploadController.upload(req, res);
+});
 
 app.use(logger('dev'));
 app.use(bodyParser.json());

@@ -25,6 +25,7 @@ const ListEnums = {
 
   ACTIONS: {
     DOWNLOAD: 'download',
+    UPLOAD: 'upload',
     SETTINGS: 'settings',
   },
 };

@@ -11,6 +11,7 @@ import searchConfig from 'shared/search-config';
 import SearchUtils from 'shared/search-utils';
 
 import DownloadResults from './download-results';
+import FileUpload from './upload-data';
 import SearchListItem from './search-list-item';
 import SearchSettings from './search-settings';
 import { getSettings, searchItems } from './actions';
@@ -90,6 +91,12 @@ class SearchContainer extends Component {
         });
         break;
 
+      case ListEnums.ACTIONS.UPLOAD:
+        this.fileUploadDialog.showDialog({
+          index: fetchParams.index,
+        });
+        break;
+
       default:
     }
   }
@@ -157,6 +164,7 @@ class SearchContainer extends Component {
       <div className="search-list-container">
         <DownloadResults ref={ (node) => { this.downloadDialog = node; } } { ...downloadResultProps } />
         <SearchSettings ref={ (node) => { this.searchSettingsDialog = node; } } { ...searchSettings } />
+        <FileUpload ref={ (node) => { this.fileUploadDialog = node; } } />
         <ListComponent ref={ (node) => { this.searchList = node; } } { ...listComponentProps } />
       </div>
     );

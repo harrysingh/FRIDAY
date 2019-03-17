@@ -1,6 +1,7 @@
 .search-list-container {
   .download-container,
-  .user-settings-container {
+  .user-settings-container,
+  .upload-container {
     .overlay {
       position: fixed;
       background: #000;
@@ -25,10 +26,12 @@
         padding: 2rem;
         float: right;
 
+        .upload,
         button {
           padding: 0.75rem;
           margin-left: .5rem;
           font-size: 0.8rem;
+          cursor: pointer;
 
           &.primary {
             background: #326ec8;
@@ -103,6 +106,12 @@
     }
   }
 
+  .upload-container {
+    .select-file {
+      padding: 1rem;
+    }
+  }
+
   .header,
   .item-list {
     .makt_props-makt_maktx {
@@ -129,7 +138,8 @@
 
   .action-bar {
     .download,
-    .settings {
+    .settings,
+    .upload {
       border: none;
       background: transparent;
       font-size: 0.9rem;
