@@ -150,8 +150,7 @@ const logout = (req, res) => {
 
   res.cookie(DVUtils.FRIDAY_USER_PROFILE_KEY, DVUtils.EMPTY_STRING, { maxAge: 9999 });
   res.cookie(DVUtils.FRIDAY_AUTH_TOKEN_KEY, DVUtils.EMPTY_STRING, { maxAge: 9999 });
-  res.redirect(DVUtils.LOGIN_PATH);
-  return 0;
+  return reS(res);
 };
 
 module.exports = {

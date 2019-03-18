@@ -61,7 +61,8 @@ const SearchUtils = {
       .concat('csv');
   },
 
-  getFieldsConfig(searchSettings, searchConfig, index) {
+  getFieldsConfig(inputSearchSettings, searchConfig, index) {
+    const searchSettings = inputSearchSettings || {};
     const settingsForIndex = searchSettings[index || DVUtils.EMPTY_STRING] || { views: [], selected: 0 };
     const settings = _.isEmpty(settingsForIndex.views)
       ? {}

@@ -3,6 +3,7 @@ import {
 } from './actions';
 
 export default (state = {
+  logout: false,
   user: {},
   errorMessage: null,
 }, action) => {
@@ -15,6 +16,7 @@ export default (state = {
     case LOGOUT_RESULT:
       return {
         ...state,
+        logout: true,
         user: {},
       };
     case LOGOUT_ERR:
