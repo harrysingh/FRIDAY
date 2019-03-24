@@ -8,14 +8,26 @@ import searchConfig from 'shared/search-config';
 
 import SearchSettings from './search-settings';
 
+const fieldLabelConfig = searchConfig.header.config.columns;
+
 class SearchViews extends Component {
+  static getSettingJson(fields, selected) {
+    return fields.map((field) => {
+      return {
+        value: field,
+        label: fieldLabelConfig[field].label,
+        selected,
+      };
+    });
+  }
+
   static getDefaultView(index) {
     const defaultFields = searchConfig.fieldsConfig[index];
 
     return {
       name: 'New View',
-      search: defaultFields.search,
-      output: defaultFields.output,
+      search: SearchViews.getSettingJson(defaultFields.search, true),
+      output: SearchViews.getSettingJson(defaultFields.output, true),
     };
   }
 
@@ -90,8 +102,9 @@ class SearchViews extends Component {
       return <span/>;
     }
 
-    const currentSettings = _.extend(this.state.views[this.state.selectedView], {
+    const currentSettings = _.extend({}, this.state.views[this.state.selectedView], {
       index: this.state.index,
+      getSettingJson: SearchViews.getSettingJson,
       saveSettings: this.saveSettings,
       closeDialog: this.closeDialog,
     });
@@ -119,7 +132,7 @@ class SearchViews extends Component {
             </select>
             <button type="button" className="add-view" onClick={ this.addView } >Add</button>
           </div>
-          <SearchSettings { ... currentSettings } />
+          <SearchSettings { ...currentSettings } />
         </div>
       </div>
     );

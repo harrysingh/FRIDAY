@@ -13,8 +13,8 @@ class UploadData extends Component {
     this.handleMaterialChange = this.handleMaterialChange.bind(this);
   }
 
-  handleMaterialChange(event) {
-    this.setState({ index: event.currentTarget.value });
+  handleMaterialChange(selectedIndex) {
+    this.setState(selectedIndex);
   }
 
   showDialog(options) {
