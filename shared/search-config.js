@@ -60,6 +60,9 @@ module.exports = {
         name: 'Export to CSV',
         event: 'download',
       }, {
+        name: 'Upload',
+        event: 'upload',
+      }, {
         name: 'Settings',
         event: 'settings',
       } ],

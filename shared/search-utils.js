@@ -62,11 +62,18 @@ const SearchUtils = {
       .concat('csv');
   },
 
-  getFieldsConfig(searchSettings, searchConfig, index) {
-    const settings = searchSettings[index || DVUtils.EMPTY_STRING] || {};
+  getFieldsConfig(inputSearchSettings, searchConfig, index) {
+    const searchSettings = inputSearchSettings || {};
+    const settingsForIndex = searchSettings[index || DVUtils.EMPTY_STRING] || { views: [], selected: 0 };
+    const settings = _.isEmpty(settingsForIndex.views)
+      ? {}
+      : settingsForIndex.views[settingsForIndex.selected || 0] || {};
     const config = searchConfig.fieldsConfig[index || DVUtils.EMPTY_STRING] || {};
 
-    let outputFields = _.union(_.isEmpty(settings.output) ? config.output : settings.output, searchConfig.extraFields);
+    let outputFields = _.union(
+      _.isEmpty(settings.output) ? config.output : SearchUtils.getSelectedFields(settings.output),
+      searchConfig.extraFields,
+    );
     if (DVUtils.isUserAdmin(window.DV.user)) {
       outputFields = _.union(outputFields, searchConfig.adminFields);
     }
@@ -74,8 +81,14 @@ const SearchUtils = {
     return {
       key: config.key,
       output: outputFields,
-      search: _.isEmpty(settings.search) ? config.search : settings.search,
+      search: _.isEmpty(settings.search) ? config.search : SearchUtils.getSelectedFields(settings.search),
     };
+  },
+
+  getSelectedFields(fields) {
+    return _.pluck(_.filter(fields, (item) => {
+      return item.selected;
+    }), [ 'value' ]);
   },
 };
 

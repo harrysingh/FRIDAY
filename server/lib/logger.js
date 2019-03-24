@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { Logger, transports } = require('winston');
-const DVEnums = require('./enum');
+const DVEnums = require('../../shared/enum');
 
 const logConfig = require('./../config/config').log;
 

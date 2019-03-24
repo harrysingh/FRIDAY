@@ -15,6 +15,7 @@ const DVUtils = {
   HASH: '#',
   HYPHEN: '-',
   LOGIN_PATH: '/login',
+  NEWLINE: '\n',
   PERIOD: '.',
   QM: '?',
   SEARCH_PATH: '/search',
