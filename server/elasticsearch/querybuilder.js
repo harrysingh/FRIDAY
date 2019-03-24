@@ -3,6 +3,8 @@ const DVUtils = require('../../shared/utils');
 const { throwError } = require('../services/util.service');
 const ESEnums = require('./enum');
 
+const commonSearchQueries = require('./stop-words');
+
 const getWildCardQuery = (inputOptions) => {
   const options = inputOptions || { fields: [] };
 
@@ -75,6 +77,14 @@ const getExactMatchQuery = (inputOptions) => {
   };
 };
 
+const getFuzzySearchString = (options) => {
+  if (String(options.common) !== 'true') {
+    return options.search;
+  }
+
+  return _.difference(options.search.split(DVUtils.SPACE), commonSearchQueries).join(DVUtils.SPACE);
+};
+
 const getSearchQuery = (inputOptions) => {
   const searchOptions = inputOptions || {};
   const minScoreOption = {};
@@ -88,6 +98,7 @@ const getSearchQuery = (inputOptions) => {
   }
   const mixWords = searchOptions.search.replace(/\s/g, '');
   const fields = getFieldsToSearch(searchOptions.fields);
+  const fuzzySearch = getFuzzySearchString(searchOptions);
   const options = {
     search: searchOptions.search,
     fields,
@@ -108,8 +119,13 @@ const getSearchQuery = (inputOptions) => {
           },
           getMultiMatchQueryJson(_.extend(options, { attrs: { fuzziness: 1 } })),
           getMultiMatchQueryJson(_.extend(options, { attrs: { boost: 3000 } })),
-          getMultiMatchQueryJson(_.extend({ operator: ESEnums.OPERATOR.OR }, options, { attrs: { fuzziness: 1 } })),
-          getMultiMatchQueryJson(_.extend({ operator: ESEnums.OPERATOR.OR }, options, { attrs: { boost: 3 } })),
+          getMultiMatchQueryJson(_.extend({
+            operator: ESEnums.OPERATOR.AND,
+            type: ESEnums.MULTI_MATCH_TYPE.MOST_FIELDS,
+          }, options, { search: fuzzySearch, attrs: { fuzziness: 1 } })),
+          getMultiMatchQueryJson(_.extend({
+            operator: ESEnums.OPERATOR.OR,
+          }, options, { search: fuzzySearch, attrs: { boost: 3 } })),
         ],
       },
     },

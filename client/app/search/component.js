@@ -22,7 +22,7 @@ const defaultListConfig = ListComponent.populateDefaultProps(searchConfig);
 
 class SearchContainer extends Component {
   static getValidParams() {
-    return [ 'search', 'index', 'exact', 'maxScore' ];
+    return [ 'search', 'index', 'exact', 'common', 'maxScore' ];
   }
 
   static getDefaultFetchParams() {
@@ -120,6 +120,7 @@ class SearchContainer extends Component {
 
     searchListConfig.searcher.data.value = fetchParams.search;
     searchListConfig.searcher.data.exact = fetchParams.exact === 'true';
+    searchListConfig.searcher.data.common = fetchParams.common === 'true';
 
     searchListConfig.actionBar.config.onActionClick = this.onActionClick;
     searchListConfig.actionBar.config.actions[0].disabled = this.props.total === 0;
