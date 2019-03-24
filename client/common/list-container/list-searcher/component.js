@@ -14,6 +14,7 @@ class Searcher extends Component {
     this.handleSearchButtonClick = this.handleSearchButtonClick.bind(this);
     this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
     this.triggerExactMatchChange = this.triggerExactMatchChange.bind(this);
+    this.triggerStopWordsChange = this.triggerStopWordsChange.bind(this);
   }
 
   componentDidMount() {
@@ -84,6 +85,13 @@ class Searcher extends Component {
     this.props.onSearchChange(searchOptions);
   }
 
+  triggerStopWordsChange(checked) {
+    const searchOptions = {};
+    searchOptions[this.lastSearchBy] = this.lastSearchString;
+    searchOptions.common = checked;
+    this.props.onSearchChange(searchOptions);
+  }
+
   toggleClearSearchElement(flag) {
     this.node.querySelector('.clear-search').classList.toggle('hidden', !flag);
   }
@@ -110,6 +118,10 @@ class Searcher extends Component {
         <div className="exact-match">
           <Switch onChange={ this.triggerExactMatchChange } checked={ this.props.data.exact } />
           <div className="label">Exact Match</div>
+        </div>
+        <div className="stop-words">
+          <Switch onChange={ this.triggerStopWordsChange } checked={ this.props.data.common } />
+          <div className="label">Stop Words</div>
         </div>
       </div>
     );
